@@ -1,16 +1,27 @@
-import { FormWrapper } from "../Wrapper/FormWrapper";
-
-export function FamilyDetails({ martialStatus, children, wife, updateFields }) {
+export function FamilyDetails({
+  nextStep,
+  previousStep,
+  userData,
+  handleChange,
+}) {
+  const submitHandler = (e) => {
+    e.preventDefault();
+    nextStep();
+  };
   return (
-    <FormWrapper title="Family Details ">
+    <form
+      onSubmit={submitHandler}
+      style={{ display: "flex", flexDirection: "column", width: "300px" }}
+    >
       <label>Martial Status</label>
       <div style={{ display: "flex" }}>
         <label>
           <input
             type="radio"
             value="married"
-            checked={martialStatus === "married"}
-            onChange={(e) => updateFields({ martialStatus: e.target.value })}
+            checked={userData.martialStatus === "married"}
+            name="martialStatus"
+            onChange={handleChange}
           />
           Married
         </label>
@@ -18,32 +29,47 @@ export function FamilyDetails({ martialStatus, children, wife, updateFields }) {
           <input
             type="radio"
             value="happy"
-            checked={martialStatus === "happy"}
-            onChange={(e) => updateFields({ martialStatus: e.target.value })}
+            checked={userData.martialStatus === "happy"}
+            name="martialStatus"
+            onChange={handleChange}
           />
           Happy
         </label>
       </div>
-      {martialStatus === "married" ? (
+      {userData.martialStatus === "married" ? (
         <>
           {" "}
           <label>Child Name</label>
           <input
             required
             type="text"
-            value={children}
-            onChange={(e) => updateFields({ children: e.target.value })}
+            value={userData.children}
+            name="children"
+            onChange={handleChange}
           />
           <label>Wife Name</label>
           <input
             required
             min={1}
             type="text"
-            value={wife}
-            onChange={(e) => updateFields({ wife: e.target.value })}
+            value={userData.wife}
+            name="wife"
+            onChange={handleChange}
           />
         </>
       ) : null}
-    </FormWrapper>
+      <div style={{ display: "flex" }}>
+        <button
+          type="button"
+          onClick={() => previousStep()}
+          style={{ width: "100px", margin: "20px" }}
+        >
+          Previous
+        </button>
+        <button type="submit" style={{ width: "100px", margin: "20px" }}>
+          Next
+        </button>
+      </div>
+    </form>
   );
 }

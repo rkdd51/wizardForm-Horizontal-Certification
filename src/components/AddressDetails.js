@@ -1,37 +1,63 @@
-import { FormWrapper } from "../Wrapper/FormWrapper";
-
-export function AddressDetails({ street, city, state, zip, updateFields }) {
+export function AddressDetails({
+  nextStep,
+  previousStep,
+  userData,
+  handleChange,
+}) {
+  const submitHandler = (e) => {
+    e.preventDefault();
+    nextStep();
+  };
   return (
-    <FormWrapper title="Address">
+    <form
+      onSubmit={submitHandler}
+      style={{ display: "flex", flexDirection: "column", width: "300px" }}
+    >
       <label>Street</label>
       <input
         autoFocus
         required
         type="text"
-        value={street}
-        onChange={(e) => updateFields({ street: e.target.value })}
+        value={userData.street}
+        name="street"
+        onChange={handleChange}
       />
       <label>City</label>
       <input
         required
         type="text"
-        value={city}
-        onChange={(e) => updateFields({ city: e.target.value })}
+        value={userData.city}
+        name="city"
+        onChange={handleChange}
       />
       <label>State</label>
       <input
         required
         type="text"
-        value={state}
-        onChange={(e) => updateFields({ state: e.target.value })}
+        value={userData.state}
+        name="state"
+        onChange={handleChange}
       />
       <label>Zip</label>
       <input
         required
         type="text"
-        value={zip}
-        onChange={(e) => updateFields({ zip: e.target.value })}
+        value={userData.zip}
+        name="zip"
+        onChange={handleChange}
       />
-    </FormWrapper>
+      <div style={{ display: "flex" }}>
+        <button
+          type="button"
+          onClick={() => previousStep()}
+          style={{ width: "100px", margin: "20px" }}
+        >
+          Previous
+        </button>
+        <button type="submit" style={{ width: "100px", margin: "20px" }}>
+          Next
+        </button>
+      </div>
+    </form>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { LoginDetails } from "./components/LoginDetails";
 import { AddressDetails } from "./components/AddressDetails";
-import { useForm } from "./customHook/useForm";
+
 import { UserDetails } from "./components/UserDetails";
 import { FamilyDetails } from "./components/FamilyDetails";
 
@@ -23,159 +23,180 @@ const INITIAL_DATA = {
 };
 
 function App() {
-  const [firstAccordion, setFirstAccordion] = useState(false);
-  const [secondAccordion, setSecondAccordion] = useState(false);
-  const [thirdAccordion, setThirdAccordion] = useState(false);
-  const [fourthAccordion, setFourthAccordion] = useState(false);
-  const [toggle, setToggle] = useState(false);
-  const [data, setData] = useState(INITIAL_DATA);
-  function updateFields(fields) {
-    setData((prev) => {
-      return { ...prev, ...fields };
-    });
-  }
-  const { steps, currentStepIndex, step, isFirstStep, isLastStep, back, next } =
-    useForm([
-      <UserDetails {...data} updateFields={updateFields} />,
-      <FamilyDetails {...data} updateFields={updateFields} />,
-      <LoginDetails {...data} updateFields={updateFields} />,
-      <AddressDetails {...data} updateFields={updateFields} />,
-    ]);
+  const [userData, setUserData] = useState(INITIAL_DATA);
+  const [step, setStep] = useState(1);
+  //Accordion
+  const [parentAccordion, setParentAccordion] = useState(false);
+  const [userDetailsAccordion, setUserDetailsAccordion] = useState(false);
+  const [addressDetailsAccordion, setAddressDetailsAccordion] = useState(false);
+  const [familyDetailsAccordion, setFamilyDetailsAccordion] = useState(false);
+  const [loginDetailsAccordion, setLoginDetailsAccordion] = useState(false);
+  const nextStep = () => {
+    setStep(step + 1);
+  };
+  const previousStep = () => {
+    setStep(step - 1);
+  };
 
-  function onSubmit(e) {
-    e.preventDefault();
-    if (!isLastStep) return next();
-    setToggle(true);
-    console.log(data);
-  }
+  const handleChange = (e) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value.trim() });
+  };
 
+  const dataSubmitted = () => {
+    console.log(userData, "userData");
+    setParentAccordion(true);
+  };
+
+  const Form = () => {
+    switch (step) {
+      case 1:
+        return (
+          <UserDetails
+            nextStep={nextStep}
+            previousStep={previousStep}
+            userData={userData}
+            handleChange={handleChange}
+          />
+        );
+      case 2:
+        return (
+          <AddressDetails
+            nextStep={nextStep}
+            previousStep={previousStep}
+            userData={userData}
+            handleChange={handleChange}
+          />
+        );
+      case 3:
+        return (
+          <FamilyDetails
+            nextStep={nextStep}
+            previousStep={previousStep}
+            userData={userData}
+            handleChange={handleChange}
+          />
+        );
+      case 4:
+        return (
+          <LoginDetails
+            dataSubmitted={dataSubmitted}
+            previousStep={previousStep}
+            userData={userData}
+            handleChange={handleChange}
+          />
+        );
+      default:
+        return null;
+    }
+  };
   return (
     <div style={{ display: "flex" }}>
       <div
         style={{
-          position: "relative",
-          background: "white",
-          border: "1px solid black",
-          padding: "2rem",
-          margin: "1rem",
-          borderRadius: ".5rem",
           width: "50%",
+          display: "flex",
+          justifyContent: "center",
+          margin: "20px",
         }}
       >
-        <form onSubmit={onSubmit}>
-          <div style={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-            {currentStepIndex + 1} / {steps.length}
-          </div>
-          {step}
-          <div
-            style={{
-              marginTop: "1rem",
-              display: "flex",
-              gap: ".5rem",
-              justifyContent: "flex-end",
-            }}
-          >
-            {!isFirstStep && (
-              <button type="button" onClick={back}>
-                Back
-              </button>
-            )}
-            <button type="submit">{isLastStep ? "Submit" : "Next"}</button>
-          </div>
-        </form>
-
-        {/* Second Menu */}
+        {Form()}
       </div>
-      {toggle ? (
-        <div
-          style={{
-            backgroundColor: "#D3D3D3",
-            width: "50%",
-            padding: "2rem",
-            margin: "1rem",
-            borderRadius: ".5rem",
-          }}
-        >
-          {/* First */}
-          <div
-            style={{
-              width: "40%",
-              backgroundColor: "white",
-              paddingLeft: "8rem",
-              cursor: "pointer",
-            }}
-            onClick={() => setFirstAccordion(!firstAccordion)}
-          >
-            <h2> User Details {firstAccordion ? "-" : "+"}</h2>
-          </div>
-          {firstAccordion ? (
+      <div style={{ width: "50%", display: "flex", justifyContent: "center" }}>
+        {parentAccordion ? (
+          <div>
+            <div
+              onClick={() => setUserDetailsAccordion(!userDetailsAccordion)}
+              style={{
+                border: "1px solid red",
+                width: "200px",
+                margin: "20px",
+              }}
+            >
+              UserDetails {userDetailsAccordion ? " + " : "- "}
+            </div>
             <>
-              <h4> First Name : {data.firstName}</h4>
-              <h5> Last Name :{data.lastName}</h5>
-              <h5>Age: {data.age}</h5>
-              <h5>Age: {data.gender}</h5>
-              <h5>Age: {data.color}</h5>
+              {userDetailsAccordion ? (
+                <div>
+                  FirstName : {userData.firstName}
+                  <br />
+                  LastName : {userData.lastName}
+                  <br />
+                  Age:{userData.age}
+                  <br />
+                  Gender:{userData.gender}
+                  <br />
+                  Color:{userData.color}
+                </div>
+              ) : null}
             </>
-          ) : null}
-          {/* Second */}
-          <div
-            style={{
-              width: "40%",
-              backgroundColor: "white",
-              paddingLeft: "8rem",
-              cursor: "pointer",
-            }}
-            onClick={() => setSecondAccordion(!secondAccordion)}
-          >
-            <h2> Address Details {secondAccordion ? "-" : "+"}</h2>
-          </div>
-          {secondAccordion ? (
+            <div
+              onClick={() =>
+                setAddressDetailsAccordion(!addressDetailsAccordion)
+              }
+              style={{
+                border: "1px solid red",
+                width: "200px",
+                margin: "20px",
+              }}
+            >
+              Address Details {addressDetailsAccordion ? "+" : "-"}
+            </div>
             <>
-              <h4> Street : {data.street}</h4>
-              <h5> City :{data.city}</h5>
-              <h5>State: {data.state}</h5>
-              <h5>Zip: {data.zip}</h5>
+              {addressDetailsAccordion ? (
+                <div>
+                  Street : {userData.street}
+                  <br />
+                  City : {userData.city}
+                  <br />
+                  State:{userData.state}
+                  <br />
+                  Zip:{userData.zip}
+                </div>
+              ) : null}
             </>
-          ) : null}
-          {/* Third */}
-          <div
-            style={{
-              width: "40%",
-              backgroundColor: "white",
-              paddingLeft: "8rem",
-              cursor: "pointer",
-            }}
-            onClick={() => setThirdAccordion(!thirdAccordion)}
-          >
-            <h2> Account Details {thirdAccordion ? "-" : "+"}</h2>
-          </div>
-          {thirdAccordion ? (
+            <div
+              onClick={() => setFamilyDetailsAccordion(!familyDetailsAccordion)}
+              style={{
+                border: "1px solid red",
+                width: "200px",
+                margin: "20px",
+              }}
+            >
+              Family Details {familyDetailsAccordion ? "+" : "-"}
+            </div>
             <>
-              <h4> Email : {data.email}</h4>
-              <h5> Password :{data.password}</h5>
+              {familyDetailsAccordion ? (
+                <div>
+                  Martial Status : {userData.martialStatus}
+                  <br />
+                  Children : {userData.children}
+                  <br />
+                  Wife:{userData.wife}
+                </div>
+              ) : null}
             </>
-          ) : null}
-          {/* Family */}
-          <div
-            style={{
-              width: "40%",
-              backgroundColor: "white",
-              paddingLeft: "8rem",
-              cursor: "pointer",
-            }}
-            onClick={() => setFourthAccordion(!fourthAccordion)}
-          >
-            <h2> Family Details {fourthAccordion ? "-" : "+"}</h2>
-          </div>
-          {fourthAccordion ? (
+            <div
+              onClick={() => setLoginDetailsAccordion(!loginDetailsAccordion)}
+              style={{
+                border: "1px solid red",
+                width: "200px",
+                margin: "20px",
+              }}
+            >
+              Login Details {loginDetailsAccordion ? "+" : "-"}
+            </div>
             <>
-              <h4> Martial Status : {data.martialStatus}</h4>
-              {data?.wife ? <h5> Wife :{data.wife} </h5> : null}
-              {data?.children ? <h5> Child :{data.children} </h5> : null}
+              {loginDetailsAccordion ? (
+                <div>
+                  Email : {userData.email}
+                  <br />
+                  Password : {userData.password}
+                </div>
+              ) : null}
             </>
-          ) : null}
-        </div>
-      ) : null}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
