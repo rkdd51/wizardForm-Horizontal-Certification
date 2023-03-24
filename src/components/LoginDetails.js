@@ -13,6 +13,7 @@ export function LoginDetails({
       onSubmit={handleSubmit}
       style={{ display: "flex", flexDirection: "column", width: "300px" }}
     >
+      <h1>LoginDetails</h1>
       <label>Email</label>
       <input
         autoFocus

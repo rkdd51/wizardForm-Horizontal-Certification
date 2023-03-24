@@ -8,6 +8,7 @@ export function UserDetails({ nextStep, userData, handleChange }) {
       onSubmit={submitHandler}
       style={{ display: "flex", flexDirection: "column", width: "300px" }}
     >
+      <h1>UserDetails</h1>
       <label>First Name</label>
       <input
         autoFocus

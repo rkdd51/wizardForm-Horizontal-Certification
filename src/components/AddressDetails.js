@@ -13,6 +13,7 @@ export function AddressDetails({
       onSubmit={submitHandler}
       style={{ display: "flex", flexDirection: "column", width: "300px" }}
     >
+      <h1>AddressDetails</h1>
       <label>Street</label>
       <input
         autoFocus

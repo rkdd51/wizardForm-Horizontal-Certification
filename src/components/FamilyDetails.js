@@ -13,6 +13,7 @@ export function FamilyDetails({
       onSubmit={submitHandler}
       style={{ display: "flex", flexDirection: "column", width: "300px" }}
     >
+      <h1>FamilyDetails</h1>
       <label>Martial Status</label>
       <div style={{ display: "flex" }}>
         <label>
